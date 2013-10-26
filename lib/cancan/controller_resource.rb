@@ -12,11 +12,13 @@ module CanCan
     end
 
     def initialize(controller, *args)
-      @params_method = args.last[:attributes] if args.last.respond_to?(:[])
       @controller = controller
       @params = controller.params
       @options = args.extract_options!
       @name = args.first
+
+      @params_method = args.last[:attributes] if args.last.class == Hash
+      @params_method ||= "#{name}_params"
       raise CanCan::ImplementationRemoved, "The :nested option is no longer supported, instead use :through with separate load/authorize call." if @options[:nested]
       raise CanCan::ImplementationRemoved, "The :name option is no longer supported, instead pass the name as the first argument." if @options[:name]
       raise CanCan::ImplementationRemoved, "The :resource option has been renamed back to :class, use false if no class." if @options[:resource]

@@ -497,5 +497,13 @@ describe CanCan::ControllerResource do
       resource = CanCan::ControllerResource.new(@controller, {:attributes => :attributes_method})
       resource.send("resource_params_by_namespaced_name").should eq(sanitized)
     end
+
+    it "should use a default attributes method based on the model name" do
+      @params.merge!(:controller => "project", :action => "create")
+      sanitized = {:first => 1, :second => 2}
+      stub(@controller).post_params {sanitized}
+      resource = CanCan::ControllerResource.new(@controller, {:name => 'post'})
+      resource.send("resource_params_by_namespaced_name").should eq(sanitized)
+    end
   end
 end
